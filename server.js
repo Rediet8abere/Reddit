@@ -8,6 +8,7 @@ const expressValidator = require('express-validator');
 
 
 // Use Body Parser
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -20,7 +21,7 @@ app.use(express.static('public'));
 
 // Set db
 const db = require('./data/reddit-db');
-
+const mongoose = require("mongoose");
 
 
 // Import Post Controller 
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
   res.render('home');
 })
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
   Post.find({}).lean()
     .then(posts => {
       res.render('posts-index', { posts });
@@ -41,25 +42,48 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get("/posts/:id", function(req, res) {
-  // LOOK UP THE POST
-  Post.findById(req.params.id).lean()
-    .then(post => {
-      res.render("posts-show", { post });
-    })
-    .catch(err => {
-      console.log(err.message);
-    });
-});
-
 
 app.get('/posts/new', (req, res) => {
   res.render('posts-new')
 })
 
 
-app.post('/posts/new', posts_controller.new_post)
+app.post('/posts/new', (req, res) => {
+  Post.find({}).lean()
+    .then(posts => {
+      res.render('posts-index', { posts });
+    })
+    .catch(err => {
+      console.log(err.message);
+    })
+})
 
+// posts_controller.new_post
+
+app.get("/posts/:id", function(req, res) {
+  // LOOK UP THE POST
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    Post.findById(req.params.id).lean()
+    .then(post => {
+      res.render("posts-show", { post });
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+  
+});
+
+  // SUBREDDIT
+app.get("/n/:subreddit", function(req, res) {
+    Post.find({ subreddit: req.params.subreddit }).lean()
+      .then(posts => {
+        res.render("posts-index", { posts });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

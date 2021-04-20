@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 module.exports.new_post = (req, res, next) => {
   // INSTANTIATE INSTANCE OF POST MODEL
   const newPost = new Post({
-    _id: new mongoose.Types.ObjectId(),
+    _id: mongoose.Types.ObjectId(),
     title: req.body.title,
     url: req.body.url,
-    summary: req.body.summary
+    summary: req.body.summary,
+    subreddit: req.body.subreddit
   })
 
   // SAVE INSTANCE OF POST MODEL TO DB
@@ -19,10 +20,5 @@ module.exports.new_post = (req, res, next) => {
     message: 'Handling POST requests to /posts/new',
     createdPost: newPost
   })
-
-//   post.save((err, post) => {
-//     // REDIRECT TO THE ROOT
-//     return res.redirect(`/`);
-//  })
 }
    
