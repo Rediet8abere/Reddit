@@ -7,7 +7,9 @@ const mongoDB = 'mongodb+srv://RedditNode:' + process.env.MONGO_ATLAS_PW  + '@re
 mongoose.Promise = global.Promise;
 mongoose.connect(
   mongoDB,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  {
+    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false,
+  },
   function(err, db) {
     assert.equal(null, err);
     console.log("Connected successfully to database");
