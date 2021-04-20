@@ -41,6 +41,17 @@ app.get('/', (req, res) => {
     })
 })
 
+app.get("/posts/:id", function(req, res) {
+  // LOOK UP THE POST
+  Post.findById(req.params.id).lean()
+    .then(post => {
+      res.render("posts-show", { post });
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+});
+
 
 app.get('/posts/new', (req, res) => {
   res.render('posts-new')
