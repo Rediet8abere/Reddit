@@ -3,4 +3,15 @@
     <a href="{{post.url}}" class="lead">{{post.title}}</a>
     <p>{{post.summary}}</p>
   </div>
+
+  <form action="/posts/{{post._id}}/comments" method="post">
+    <textarea class='form-control' name="content" placeholder="Comment"></textarea>
+    <div class="text-right">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+
+  {{#each post.comments}}
+    <p>{{this.content}}</p>
+  {{/each}}
 </div>
