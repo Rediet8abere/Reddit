@@ -1,7 +1,11 @@
 const express = require('express')
+var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const app = express()
+app.use(cookieParser());
 const exphbs  = require('express-handlebars');
 const port = 3800
+
 
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
@@ -27,8 +31,10 @@ const mongoose = require("mongoose");
 // Import Post Controller 
 const posts_controller = require('./controllers/posts.js');
 const comments_controller = require('./controllers/comments.js');
+const auth_controller = require('./controllers/auth.js')(app);
 const Post = require('./models/post');
 const Comment = require('./models/comment');
+
 
 app.get('/', (req, res) => {
   res.render('home');
@@ -71,13 +77,6 @@ app.get("/posts/:id", function(req, res) {
     }).catch((err) => {
       console.log(err.message)
     })
-    // Post.findById(req.params.id).lean()
-    // .then(post => {
-    //   res.render("posts-show", { post });
-    // })
-    // .catch(err => {
-    //   console.log(err.message);
-    // });
   }
   
 });
