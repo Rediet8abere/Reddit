@@ -10,6 +10,20 @@ const port = 3800
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 
+var checkAuth = (req, res, next) => {
+  console.log("Checking authentication");
+  if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+    req.user = null;
+  } else {
+    var token = req.cookies.nToken;
+    var decodedToken = jwt.decode(token, { complete: true }) || {};
+    req.user = decodedToken.payload;
+  }
+
+  next();
+};
+app.use(checkAuth);
+
 
 // Use Body Parser
 
@@ -56,16 +70,19 @@ app.get('/posts/new', (req, res) => {
 })
 
 
-app.post('/posts/new', (req, res) => {
-  // LOOK UP THE POST
-  Post.find({}).lean()
-    .then(posts => {
-      res.render('posts-index', { posts });
-    })
-    .catch(err => {
-      console.log(err.message);
-    })
-})
+
+// CREATE
+app.post("/posts/new", (req, res) => {
+  if (req.user) {
+    var post = new Post(req.body);
+
+    post.save(function(err, post) {
+      return res.redirect(`/`);
+    });
+  } else {
+    return res.status(401); // UNAUTHORIZED
+  }
+});
 
 // posts_controller.new_post
 
