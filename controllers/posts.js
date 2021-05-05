@@ -21,4 +21,3 @@ module.exports.new_post = (req, res, next) => {
     createdPost: newPost
   })
 }
-   

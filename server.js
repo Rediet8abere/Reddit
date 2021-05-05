@@ -42,7 +42,7 @@ const db = require('./data/reddit-db');
 const mongoose = require("mongoose");
 
 
-// Import Post Controller 
+// Import Post Controller
 const posts_controller = require('./controllers/posts.js');
 const comments_controller = require('./controllers/comments.js');
 const auth_controller = require('./controllers/auth.js')(app);
@@ -95,7 +95,7 @@ app.get("/posts/:id", function(req, res) {
       console.log(err.message)
     })
   }
-  
+
 });
 
   // SUBREDDIT
