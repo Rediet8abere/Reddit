@@ -1,7 +1,6 @@
 const User = require("../models/user");
 const jwt = require('jsonwebtoken');
 
-
 module.exports = app => {
   // SIGN UP FORM
   app.get("/sign-up", (req, res) => {
@@ -17,14 +16,17 @@ module.exports = app => {
 
     user
       .save()
-      .then(user => {
-        var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-        res.redirect("/");
+      .then((user) => {
+          var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+          res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
+          res.redirect('/');
       })
       .catch(err => {
         console.log(err.message);
         return res.status(400).send({ err: err });
       });
+
+
   });
 
   // LOGOUT
@@ -45,12 +47,14 @@ app.post("/login", (req, res) => {
   // Find this user name
   User.findOne({ username }, "username password")
     .then(user => {
+      console.log(user, "logging in -------->")
       if (!user) {
         // User not found
         return res.status(401).send({ message: "Wrong Username or Password" });
       }
       // Check the password
       user.comparePassword(password, (err, isMatch) => {
+        console.log("comparePassword------->", password,isMatch )
         if (!isMatch) {
           // Password does not match
           return res.status(401).send({ message: "Wrong Username or password" });
@@ -59,6 +63,8 @@ app.post("/login", (req, res) => {
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
           expiresIn: "60 days"
         });
+
+        console.log("token", token)
         // Set a cookie and redirect to root
         res.cookie("nToken", token, { maxAge: 900000, httpOnly: true });
         res.redirect("/");
