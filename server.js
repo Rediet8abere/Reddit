@@ -5,6 +5,7 @@ const app = express()
 app.use(cookieParser());
 const exphbs  = require('express-handlebars');
 const port = 3800
+const key = require('dotenv').config();
 
 
 const bodyParser = require('body-parser');

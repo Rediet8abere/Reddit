@@ -11,10 +11,13 @@ const UserSchema = new Schema({
     { timestamps: { createdAt: 'created_at' } }
 );
 
+
+
 // Must use function here! ES6 => functions do not bind this!
 UserSchema.pre("save", function (next) {
     // ENCRYPT PASSWORD
     const user = this;
+
     if (!user.isModified("password")) {
         return next();
     }
